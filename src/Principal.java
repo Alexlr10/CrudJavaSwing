@@ -10,6 +10,7 @@ import javax.swing.table.DefaultTableModel;
 public class Principal extends javax.swing.JFrame {
 
     List<Departamento> listaDep;
+    String modo;
 
     public void LoadTableDep() {
         DefaultTableModel modelo = new DefaultTableModel(new Object[]{"codigo", "Nome"}, 0);
@@ -33,10 +34,15 @@ public class Principal extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         listaDep = new ArrayList();
-        ManipulaInterface("Navegar");
+        listaDep.add(new Departamento(1, "Finaceiro"));
+        listaDep.add(new Departamento(2, "Gerencia"));
+        listaDep.add(new Departamento(3, "Juridico"));
+        LoadTableDep();
+        modo = "Navegar";
+        ManipulaInterface();
     }
 
-    public void ManipulaInterface(String modo) {
+    public void ManipulaInterface() {
         switch (modo) {
             case "Navegar":
                 btn_dep_salvar.setEnabled(false);
@@ -235,8 +241,18 @@ public class Principal extends javax.swing.JFrame {
         });
 
         btn_dep_editar.setText("Editar");
+        btn_dep_editar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_dep_editarActionPerformed(evt);
+            }
+        });
 
         btn_dep_excluir.setText("Excluir");
+        btn_dep_excluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_dep_excluirActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -310,20 +326,28 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_c_dep_codigoActionPerformed
 
     private void btn_dep_novoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_dep_novoActionPerformed
-
-        ManipulaInterface("Novo");
+        modo = "Novo";
+        ManipulaInterface();
     }//GEN-LAST:event_btn_dep_novoActionPerformed
 
     private void btn_dep_cancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_dep_cancelarActionPerformed
-        ManipulaInterface("Navegar");
+        modo = "Navegar";
+        ManipulaInterface();
     }//GEN-LAST:event_btn_dep_cancelarActionPerformed
 
     private void btn_dep_salvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_dep_salvarActionPerformed
         int cod = Integer.parseInt(c_dep_codigo.getText());
-        Departamento dep = new Departamento(cod, c_dep_nome.getText());
-        listaDep.add(dep);
+        if (modo.equals("Novo")) {
+            Departamento dep = new Departamento(cod, c_dep_nome.getText());
+            listaDep.add(dep);
+        } else if (modo.equals("Editar")) {
+            int index = tbl_dep_dpts.getSelectedRow();
+            listaDep.get(index).setCodigo(cod);
+            listaDep.get(index).setNome(c_dep_nome.getText());
+        }
         LoadTableDep();
-        ManipulaInterface("Navegar");
+        modo = "Navegar";
+        ManipulaInterface();
     }//GEN-LAST:event_btn_dep_salvarActionPerformed
 
     private void tbl_dep_dptsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl_dep_dptsMouseClicked
@@ -333,9 +357,26 @@ public class Principal extends javax.swing.JFrame {
             Departamento dep = listaDep.get(index);
             c_dep_codigo.setText(String.valueOf(dep.getCodigo()));
             c_dep_nome.setText(dep.getNome());
-            ManipulaInterface("Selecao");
+            modo = "Selecao";
+            ManipulaInterface();
         }
     }//GEN-LAST:event_tbl_dep_dptsMouseClicked
+
+    private void btn_dep_editarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_dep_editarActionPerformed
+        modo = "Editar";
+        ManipulaInterface();
+    }//GEN-LAST:event_btn_dep_editarActionPerformed
+
+    private void btn_dep_excluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_dep_excluirActionPerformed
+        int cod = Integer.parseInt(c_dep_codigo.getText());
+        modo = "Excluir";
+        int index = tbl_dep_dpts.getSelectedRow();
+        if (index >= 0 && index < listaDep.size()) {
+            listaDep.remove(index);
+        }
+        LoadTableDep();
+        ManipulaInterface();
+    }//GEN-LAST:event_btn_dep_excluirActionPerformed
 
     /**
      * @param args the command line arguments
