@@ -13,7 +13,7 @@ public class Principal extends javax.swing.JFrame {
 
     public void LoadTableDep() {
         DefaultTableModel modelo = new DefaultTableModel(new Object[]{"codigo", "Nome"}, 0);
-        
+
         for (int i = 0; i < listaDep.size(); i++) {
             Object linha[] = new Object[]{listaDep.get(i).getCodigo(),
                 listaDep.get(i).getNome()};
@@ -33,10 +33,71 @@ public class Principal extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         listaDep = new ArrayList();
-        btn_dep_salvar.setEnabled(false);
-        btn_dep_cancelar.setEnabled(false);
-        c_dep_codigo.setEnabled(false);
-        c_dep_nome.setEnabled(false);
+        ManipulaInterface("Navegar");
+    }
+
+    public void ManipulaInterface(String modo) {
+        switch (modo) {
+            case "Navegar":
+                btn_dep_salvar.setEnabled(false);
+                btn_dep_cancelar.setEnabled(false);
+                c_dep_codigo.setEnabled(false);
+                c_dep_nome.setEnabled(false);
+                btn_dep_novo.setEnabled(true);
+                btn_dep_editar.setEnabled(false);
+                btn_dep_excluir.setEnabled(false);
+
+                c_dep_codigo.setText("");
+                c_dep_nome.setText("");
+                break;
+
+            case "Novo":
+                btn_dep_salvar.setEnabled(true);
+                btn_dep_cancelar.setEnabled(true);
+                c_dep_codigo.setEnabled(true);
+                c_dep_nome.setEnabled(true);
+                btn_dep_novo.setEnabled(false);
+                btn_dep_editar.setEnabled(false);
+                btn_dep_excluir.setEnabled(false);
+
+                c_dep_codigo.setText("");
+                c_dep_nome.setText("");
+                break;
+
+            case "Editar":
+                btn_dep_salvar.setEnabled(true);
+                btn_dep_cancelar.setEnabled(true);
+                c_dep_codigo.setEnabled(true);
+                c_dep_nome.setEnabled(true);
+                btn_dep_novo.setEnabled(false);
+                btn_dep_editar.setEnabled(false);
+                btn_dep_excluir.setEnabled(false);
+                break;
+
+            case "Excluir":
+                btn_dep_salvar.setEnabled(false);
+                btn_dep_cancelar.setEnabled(false);
+                c_dep_codigo.setEnabled(false);
+                c_dep_nome.setEnabled(false);
+                btn_dep_novo.setEnabled(true);
+                btn_dep_editar.setEnabled(false);
+                btn_dep_excluir.setEnabled(false);
+                break;
+
+            case "Selecao":
+                btn_dep_salvar.setEnabled(false);
+                btn_dep_cancelar.setEnabled(false);
+                c_dep_codigo.setEnabled(false);
+                c_dep_nome.setEnabled(false);
+                btn_dep_novo.setEnabled(true);
+                btn_dep_editar.setEnabled(true);
+                btn_dep_excluir.setEnabled(true);
+                break;
+
+            default:
+                System.out.println("Modo invalido");
+
+        }
     }
 
     /**
@@ -87,6 +148,11 @@ public class Principal extends javax.swing.JFrame {
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
+            }
+        });
+        tbl_dep_dpts.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbl_dep_dptsMouseClicked(evt);
             }
         });
         jScrollPane1.setViewportView(tbl_dep_dpts);
@@ -244,20 +310,12 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_c_dep_codigoActionPerformed
 
     private void btn_dep_novoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_dep_novoActionPerformed
-        c_dep_codigo.setText("");
-        c_dep_nome.setText("");
 
-        btn_dep_salvar.setEnabled(true);
-        btn_dep_cancelar.setEnabled(true);
-        c_dep_codigo.setEnabled(true);
-        c_dep_nome.setEnabled(true);
+        ManipulaInterface("Novo");
     }//GEN-LAST:event_btn_dep_novoActionPerformed
 
     private void btn_dep_cancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_dep_cancelarActionPerformed
-        btn_dep_salvar.setEnabled(false);
-        btn_dep_cancelar.setEnabled(false);
-        c_dep_codigo.setEnabled(false);
-        c_dep_nome.setEnabled(false);
+        ManipulaInterface("Navegar");
     }//GEN-LAST:event_btn_dep_cancelarActionPerformed
 
     private void btn_dep_salvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_dep_salvarActionPerformed
@@ -265,7 +323,19 @@ public class Principal extends javax.swing.JFrame {
         Departamento dep = new Departamento(cod, c_dep_nome.getText());
         listaDep.add(dep);
         LoadTableDep();
+        ManipulaInterface("Navegar");
     }//GEN-LAST:event_btn_dep_salvarActionPerformed
+
+    private void tbl_dep_dptsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl_dep_dptsMouseClicked
+
+        int index = tbl_dep_dpts.getSelectedRow();
+        if (index >= 0 && index < listaDep.size()) {
+            Departamento dep = listaDep.get(index);
+            c_dep_codigo.setText(String.valueOf(dep.getCodigo()));
+            c_dep_nome.setText(dep.getNome());
+            ManipulaInterface("Selecao");
+        }
+    }//GEN-LAST:event_tbl_dep_dptsMouseClicked
 
     /**
      * @param args the command line arguments
