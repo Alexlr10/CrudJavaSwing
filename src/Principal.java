@@ -36,7 +36,7 @@ public class Principal extends javax.swing.JFrame {
 
         cb_func_deps.removeAllItems();
         cb_func_deps.addItem("Selecione");
-        for (int i = 0; i < listaDep.size(); i++) {            
+        for (int i = 0; i < listaDep.size(); i++) {
             cb_func_deps.addItem(listaDep.get(i).getNome());
         }
 
@@ -49,7 +49,8 @@ public class Principal extends javax.swing.JFrame {
             Object linha[] = new Object[]{
                 listaFuncs.get(i).getMatricula(),
                 listaFuncs.get(i).getNome(),
-                listaFuncs.get(i).getDep().getNome()};
+                listaFuncs.get(i).getDep().getNome()
+            };
             modelo.addRow(linha);
         }
 
@@ -71,8 +72,13 @@ public class Principal extends javax.swing.JFrame {
         listaDep.add(new Departamento(2, "Gerencia"));
         listaDep.add(new Departamento(3, "Juridico"));
         listaFuncs = new ArrayList();
+
+//        Funcionario jose = new Funcionario(123, "jose");
+//        jose.setDep(listaDep.get(1));
+//        listaFuncs.add(jose);
+
         LoadTableDep();
-//        LoadTableFunc();
+        LoadTableFunc();
         modoDep = "Navegar";
         modoFunc = "Navegar";
         ManipulaInterfaceDep();
@@ -179,7 +185,7 @@ public class Principal extends javax.swing.JFrame {
                 c_func_nome.setEnabled(true);
                 cb_func_deps.setEnabled(true);
                 btn_func_novo.setEnabled(false);
-                btn_func_editar.setEnabled(false);
+                btn_func_editar.setEnabled(true);
                 btn_func_excluir.setEnabled(false);
                 break;
 
@@ -417,10 +423,10 @@ public class Principal extends javax.swing.JFrame {
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.Object.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, true
+                false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -670,28 +676,61 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_dep_excluirActionPerformed
 
     private void tbl_func_funcsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl_func_funcsMouseClicked
-        // TODO add your handling code here:
+        int index = tbl_func_funcs.getSelectedRow();
+        if (index >= 0 && index < listaFuncs.size()) {
+            Funcionario func = listaFuncs.get(index);
+            c_func_mat.setText(String.valueOf(func.getMatricula()));
+            c_func_nome.setText(func.getNome());
+            modoFunc = "Selecao";
+            ManipulaInterfaceFunc();
     }//GEN-LAST:event_tbl_func_funcsMouseClicked
-
+    }
     private void c_func_matActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_c_func_matActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_c_func_matActionPerformed
 
     private void btn_func_salvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_func_salvarActionPerformed
-        int index = cb_func_deps.getSelectedIndex();
+
+//        int cod = Integer.parseInt(c_dep_codigo.getText());
+//        if (modoDep.equals("Novo")) {
+//            Departamento dep = new Departamento(cod, c_dep_nome.getText());
+//            listaDep.add(dep);
+//        } else if (modoDep.equals("Editar")) {
+//            int index = tbl_dep_dpts.getSelectedRow();
+//            listaDep.get(index).setCodigo(cod);
+//            listaDep.get(index).setNome(c_dep_nome.getText());
+//        }
+        int index = cb_func_deps.getSelectedIndex();//certo
+        System.out.println(index);
+        int mat = Integer.parseInt(c_func_mat.getText());
+
         if (index == 0) {
             JOptionPane.showMessageDialog(this, "Você deve selecionar um departamento");
         } else {
-            Funcionario F = new Funcionario();
-            F.setMatricula(Integer.parseInt(c_func_mat.getText()));
-            F.setNome(c_func_nome.getText());
-            F.setDep(listaDep.get(index - 1));
+            if (modoFunc.equals("Novo")) {//certo
+                Funcionario F = new Funcionario();
+                F.setMatricula(Integer.parseInt(c_func_mat.getText()));
+                F.setNome(c_func_nome.getText());
+                F.setDep(listaDep.get(index));
+                listaFuncs.add(F);
+                listaDep.get(index).addFunc(F);
+                System.out.println("novo");
+            } else if (modoFunc.equals("Editar")) {
+                Funcionario F = new Funcionario();        
+                int dep = tbl_func_funcs.getSelectedRow();
+                listaFuncs.get(dep).setMatricula(mat);
+                listaFuncs.get(dep).setNome(c_func_nome.getText());
+                Departamento d = listaDep.get(index);
+                listaFuncs.get(dep).setDep(d);
+                
+               
+               System.out.println("Editar");
+                LoadTableFunc();
+            }
 
-            listaFuncs.add(F);
-            listaDep.get(index - 1).addFunc(F);
     }//GEN-LAST:event_btn_func_salvarActionPerformed
         LoadTableFunc();
-        modoFunc= "Navegar";
+        modoFunc = "Navegar";
         ManipulaInterfaceFunc();
     }
     private void btn_func_cancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_func_cancelarActionPerformed
