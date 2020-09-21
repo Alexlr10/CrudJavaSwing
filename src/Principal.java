@@ -76,7 +76,6 @@ public class Principal extends javax.swing.JFrame {
 //        Funcionario jose = new Funcionario(123, "jose");
 //        jose.setDep(listaDep.get(1));
 //        listaFuncs.add(jose);
-
         LoadTableDep();
         LoadTableFunc();
         modoDep = "Navegar";
@@ -691,15 +690,6 @@ public class Principal extends javax.swing.JFrame {
 
     private void btn_func_salvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_func_salvarActionPerformed
 
-//        int cod = Integer.parseInt(c_dep_codigo.getText());
-//        if (modoDep.equals("Novo")) {
-//            Departamento dep = new Departamento(cod, c_dep_nome.getText());
-//            listaDep.add(dep);
-//        } else if (modoDep.equals("Editar")) {
-//            int index = tbl_dep_dpts.getSelectedRow();
-//            listaDep.get(index).setCodigo(cod);
-//            listaDep.get(index).setNome(c_dep_nome.getText());
-//        }
         int index = cb_func_deps.getSelectedIndex();//certo
         System.out.println(index);
         int mat = Integer.parseInt(c_func_mat.getText());
@@ -711,20 +701,19 @@ public class Principal extends javax.swing.JFrame {
                 Funcionario F = new Funcionario();
                 F.setMatricula(Integer.parseInt(c_func_mat.getText()));
                 F.setNome(c_func_nome.getText());
-                F.setDep(listaDep.get(index));
+                F.setDep(listaDep.get(index - 1));
                 listaFuncs.add(F);
-                listaDep.get(index).addFunc(F);
+                listaDep.get(index-1).addFunc(F);
                 System.out.println("novo");
             } else if (modoFunc.equals("Editar")) {
-                Funcionario F = new Funcionario();        
+                Funcionario F = new Funcionario();
                 int dep = tbl_func_funcs.getSelectedRow();
                 listaFuncs.get(dep).setMatricula(mat);
                 listaFuncs.get(dep).setNome(c_func_nome.getText());
-                Departamento d = listaDep.get(index);
+                Departamento d = listaDep.get(index - 1);
                 listaFuncs.get(dep).setDep(d);
-                
-               
-               System.out.println("Editar");
+
+                System.out.println("Editar");
                 LoadTableFunc();
             }
 
@@ -735,7 +724,7 @@ public class Principal extends javax.swing.JFrame {
     }
     private void btn_func_cancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_func_cancelarActionPerformed
         modoDep = "Navegar";
-        ManipulaInterfaceDep();
+        ManipulaInterfaceFunc();
     }//GEN-LAST:event_btn_func_cancelarActionPerformed
 
     private void btn_func_novoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_func_novoActionPerformed
@@ -749,7 +738,13 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_func_editarActionPerformed
 
     private void btn_func_excluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_func_excluirActionPerformed
+       // int cod = Integer.parseInt(c_func_mat.getText());
         modoFunc = "Excluir";
+        int index = tbl_func_funcs.getSelectedRow();
+        if (index >= 0 && index < listaFuncs.size()) {
+            listaFuncs.remove(index);
+        }
+        LoadTableFunc();
         ManipulaInterfaceFunc();
     }//GEN-LAST:event_btn_func_excluirActionPerformed
 
